@@ -1,0 +1,22 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: 40px;
+  background-color: #eee;
+  border-bottom: 1px solid #ccc;
+
+  .title {
+    margin: 0;
+    padding: 0;
+    color: #171717;
+    font-size: 28px;
+    text-align: center;
+    font-weight: 900;
+    span {
+      font-weight: 300;
+    }
+  }
+}
