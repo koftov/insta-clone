@@ -5,17 +5,30 @@ const config = require('../../config');
 module.exports = {
   login: (req, res) => {
     model.findOne({ email: req.body.email }, (err, user) => {
-      if (err) throw err;
+      if (err) {
+        res.status(500).send({ auth: false, msg: err });
+      }
+
+      if (!user) {
+        res.send({ auth: false, emailError: true, msg: 'Email not found' });
+        return;
+      }
 
       user.comparePassword(req.body.password, (err, isMatch) => {
         if (err) throw err;
+
         if (isMatch) {
           let token = jwt.sign({ id: user._id }, config.secret, {
             expiresIn: 86400,
           });
-          res.status(200).send({ msg: 'Login Successful', token });
+          res.status(200).send({ auth: true, token });
+          return;
         } else {
-          res.status(500).send({ msg: 'Passwords did not match' });
+          res.send({
+            auth: false,
+            passError: true,
+            msg: 'Password is incorrect',
+          });
         }
       });
     });
@@ -30,15 +43,22 @@ module.exports = {
 
     newUser
       .save()
-      .then((result) => {
-        console.log(result);
-        res
-          .status(200)
-          .send({ msg: 'Register Successful', user_id: result._id });
+      .then((user) => {
+        let token = jwt.sign({ id: user._id }, config.secret, {
+          expiresIn: 86400,
+        });
+        res.status(200).send({ auth: true, token });
       })
       .catch((err) => {
-        console.error(err);
-        res.status(500).send({ msg: 'Register Unuccessful' });
+        if (err.code === 11000) {
+          res.send({ auth: false, msg: 'Email already exists...' });
+          return;
+        } else {
+          res.send({
+            auth: false,
+            msg: 'An internal server error has occurred',
+          });
+        }
       });
   },
 };
