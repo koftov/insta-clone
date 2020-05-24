@@ -1,9 +1,19 @@
 <template>
   <footer class="footer">
-    <button>Home</button>
-    <button>Global</button>
-    <button>Post</button>
+    <button @click="goto('/')">Home</button>
+    <button @click="goto('/')">Global</button>
+    <button @click="goto('newpost')">Post</button>
     <button>Notifications</button>
     <button>Profile</button>
   </footer>
 </template>
+
+<script>
+export default {
+  methods: {
+    goto(path) {
+      this.$router.push(path);
+    },
+  },
+};
+</script>
