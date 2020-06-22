@@ -1,5 +1,6 @@
 const model = require('./model');
 const jwt = require('jsonwebtoken');
+const userModel = require('../user/model');
 const config = require('../../config');
 
 module.exports = {

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import router from '../router';
 
 Vue.use(Vuex);
 
@@ -46,12 +47,12 @@ export default new Vuex.Store({
     login(state, token) {
       state.isAuthenticated = true;
       localStorage.setItem('jwt', token);
-      this.$router.push('/');
+      router.push('/');
     },
     logout(state) {
       state.isAuthenticated = false;
       localStorage.removeItem('jwt');
-      this.$router.push('/login');
+      router.push('/login');
     },
   },
   actions: {},

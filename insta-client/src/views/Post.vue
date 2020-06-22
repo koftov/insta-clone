@@ -9,19 +9,22 @@
         autoplay
         :class="!captured ? 'show' : 'hide'"
       ></video>
-      <button class="capture-btn" @click="capture">Capture</button>
-      <button class="cancel-btn" @click="cancel" v-if="captured">
-        Cancel
-      </button>
+      <div class="post-btns">
+        <button class="capture-btn" @click="capture" v-if="!captured">
+          Capture
+        </button>
+        <button class="cancel-btn" @click="cancel" v-if="captured">
+          Cancel
+        </button>
+        <button class="upload-btn" @click="upload" v-if="captured">
+          Upload
+        </button>
+      </div>
     </section>
-    <section class="capture">
-      <canvas
-        ref="canvas"
-        id="canvas"
-        width="100%"
-        height="300"
-        :class="captured ? 'show' : 'hide'"
-      ></canvas>
+    <section :class="captured ? 'show' : 'hide'">
+      <canvas ref="canvas" id="canvas" width="100%" height="300"></canvas>
+      <label for="desc">Description: </label>
+      <input type="text" v-model="desc" />
     </section>
   </main>
 </template>
@@ -34,6 +37,7 @@ export default {
       canvas: {},
       constraints: {},
       cap: '',
+      desc: '',
       captured: false,
     };
   },
@@ -48,6 +52,19 @@ export default {
     cancel() {
       this.captured = false;
     },
+    upload() {
+      let api_url = this.$store.state.api_url;
+
+      this.$http
+        .post(api_url + 'post/newpost', {
+          auth_token: localStorage.getItem('jwt'),
+          image: this.cap,
+          desc: this.desc,
+        })
+        .then((res) => {
+          console.log(res);
+        });
+    },
   },
   mounted() {
     this.video = this.$refs.video;
@@ -58,7 +75,7 @@ export default {
     if (this.$refs.canvas) {
       this.canvas = this.$refs.canvas;
       this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight - 80;
+      this.canvas.height = window.innerWidth;
     }
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -86,7 +103,7 @@ export default {
 .hide {
   display: none;
 }
-.capture-btn {
+.post-btns {
   position: absolute;
   left: 50%;
   bottom: 65px;

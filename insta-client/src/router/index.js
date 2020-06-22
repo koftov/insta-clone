@@ -64,7 +64,7 @@ router.beforeEach((to, from, next) => {
       next();
     }
   } else {
-    if (localStorage.getItem('jwt') !== null) {
+    if (localStorage.getItem('jwt') != null) {
       next({
         path: '/',
         params: { nextUrl: '/' },
